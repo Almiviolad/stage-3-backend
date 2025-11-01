@@ -27,6 +27,7 @@ class NoteDB(Base):
     review_at = Column(DateTime, nullable=False, index=True)
     current_interval = Column(Float, default=1.0)
     flashcards = relationship("FlashcardDB", back_populates="note")
+    created_at = Column(DateTime, nullable=False)
 
 
 class FlashcardDB(Base):
@@ -51,3 +52,15 @@ def get_db():
 def create_db_tables():
     """This will now create BOTH tables."""
     Base.metadata.create_all(bind=engine)
+
+
+#database kelper functions
+def create_note(db, user_id: str, title: str, review_at):
+    """Create a new note."""
+    db_note = NoteDB(user_id=user_id, title=title, review_at=review_at, createed_at=datetime.now())
+    db.add(db_note)
+    db.commit()
+    db.refresh(db_note)
+    return db_note
+
+    
